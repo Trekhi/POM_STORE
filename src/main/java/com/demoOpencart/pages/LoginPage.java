@@ -9,6 +9,7 @@ public class LoginPage extends BasePage {
     private By usernameField = By.id("input-email"); // Reemplaza con el ID real del campo de usuario
     private By passwordField = By.id("input-password"); // Reemplaza con el ID real del campo de contraseña
     private By loginButton = By.xpath("//*[@id='content']/div/div[2]/div/form/input"); // Reemplaza con la clase real
+    private By welcomeTitle = By.xpath("//*[@id=\"content\"]/h2[1]");
 
     // Constructor
     public LoginPage(WebDriver driver) {
@@ -36,5 +37,10 @@ public class LoginPage extends BasePage {
         enterPassword(password);
         clickLoginButton();
     }
+
+    public String getWelcomeTitle(){
+        return driver.findElement(welcomeTitle).getText();
+    }
+
 
 }
