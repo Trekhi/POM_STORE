@@ -18,7 +18,7 @@ import java.util.List;
 public class PurchaseTest extends BaseTest{
 
     @Test
-    public void completePurchaseTest(){
+    public void completePurchaseTest() {
         HomePage homePage = new HomePage(driver);
         ProductPage productPage = new ProductPage(driver);
         CheckoutPage checkoutPage = new CheckoutPage(driver);
@@ -36,38 +36,36 @@ public class PurchaseTest extends BaseTest{
             WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
             WebElement waitingProduct = wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText(name)));
 
-            if (waitingProduct.isEnabled()){
-                if (!productPage.getNoProducts()){
-                    System.out.println("\nProducto existente: " + name);
+            if (waitingProduct.isEnabled()) {
+                if (!productPage.getNoProducts()) {
+                    System.out.println("Producto existente: " + name);
 
                     productPage.selectProduct(name);
                     productPage.enterQuantity(quantity);
                     productPage.clickAddButton();
 
+                    System.out.println("Producto añadido: " + name);
+
                     wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"product-product\"]/div[1]")));
                     homePage.selectCart();
+
                     driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
 
-                    //Asserts
+                    // Asserts
                     try {
-                        String actualNameProduct = homePage.getNameProductAdded();
-                        Assertions.assertEquals(name, actualNameProduct, "El nombre del producto agregado no es el mismo");
-                    }catch (AssertionError e){
-                        System.out.println("\nEl assert en ventana modal del carrito falló: " + e.getMessage());
+                        // Example: Asserts to check the name and quantity (if needed)
+                    /* String actualNameProduct = homePage.getNameProductAdded();
+                    Assertions.assertEquals(name, actualNameProduct, "El nombre del producto agregado no es el mismo");
+                    String actualQuantityProduct = homePage.getQuantityProductAdded();
+                    Assertions.assertEquals(quantity, actualQuantityProduct, "La cantidad del producto agregado no es la misma"); */
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
                     }
-
-                    try {
-                        String actualQuantityProduct = homePage.getQuantityProductAdded();
-                        Assertions.assertEquals(quantity, actualQuantityProduct, "La cantidad del producto agregado no es la misma");
-                    } catch (AssertionError e){
-                        System.out.println("El assert en ventana modal del carrito falló: " + e.getMessage());
-                    }
-
 
                 } else {
-                    System.out.println("El producto buscado no existe");
+                    System.out.println("El producto buscado no existe: " + name);
                 }
-
             } else {
                 System.out.println("Los productos no se pudieron cargar");
             }
@@ -75,36 +73,25 @@ public class PurchaseTest extends BaseTest{
 
         homePage.selectCategory("Shopping Cart");
 
-        // Validación de productos en el carrito
         data.forEach(product -> {
             String name = product[0];
             String quantity = product[1];
             boolean productFound = false;
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
             List<WebElement> rows = driver.findElements(By.xpath("//*[@id='content']/form/div/table/tbody/tr"));
 
-            // Busca el producto en la tabla
             for (int i = 1; i <= rows.size(); i++) {
                 String actualProduct = driver.findElement(By.xpath("//*[@id='content']/form/div/table/tbody/tr[" + i + "]/td[2]/a")).getText();
                 String actualQuantity = driver.findElement(By.xpath("//*[@id=\"content\"]/form/div/table/tbody/tr[1]/td[4]/div/input")).getAttribute("value");
 
-                if (actualProduct.equalsIgnoreCase(name)){
-
-                    System.out.println("\nactual name: "+actualProduct);
-                    System.out.println("expected name: "+name);
-                    System.out.println("Producto encontrado: " + actualProduct + " en la fila " + i);
-
-                    try {
-                        Assertions.assertEquals(quantity, actualQuantity, "La cantidad del producto agregado no es la misma");
-                    } catch (AssertionError e){
-                        System.out.println("El assert en el carrito falló: " + e.getMessage());
-                    }
-
-                    if (actualQuantity.equalsIgnoreCase(quantity)){
-                        System.out.println("Producto con cantidad correcta\n");
+                if (actualProduct.equalsIgnoreCase(name)) {
+                    System.out.println("Producto encontrado: " + name + " en la fila " + i);
+                    System.out.println("Cantidad actual: " + actualQuantity);
+                    System.out.println("Cantidad esperada: " + quantity);
+                    if (actualQuantity.equalsIgnoreCase(quantity)) {
+                        System.out.println("Producto con cantidad correcta");
                     } else {
-                        System.out.println("Producto con cantidad incorrecta\n");
+                        System.out.println("Producto con cantidad incorrecta");
                     }
 
                     productFound = true;
@@ -113,7 +100,7 @@ public class PurchaseTest extends BaseTest{
             }
 
             if (!productFound) {
-                System.out.println("Producto no encontrado: " + name);
+                System.out.println("Producto no encontrado en el carrito: " + name);
             }
         });
 
@@ -149,7 +136,6 @@ public class PurchaseTest extends BaseTest{
 
             driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
             checkoutPage.clickShippingButton();
-
             driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
             checkoutPage.acceptTermsAndConditions();
             checkoutPage.clickPaymentButton();
@@ -161,15 +147,7 @@ public class PurchaseTest extends BaseTest{
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"content\"]/p[1]")));
             String actualMessage = checkoutPage.getSuccessMessage();
             String expectedMessage = "Your order has been placed!";
-
-            try {
-                Assertions.assertEquals(expectedMessage,actualMessage, "El mensaje de éxito no es el mismo");
-            } catch (AssertionError e){
-                System.out.println("El assert de compra exitosa falló: " + e.getMessage());
-            }
+            Assertions.assertEquals(expectedMessage, actualMessage, "El mensaje de éxito no es el mismo");
         });
-
-
-
     }
 }

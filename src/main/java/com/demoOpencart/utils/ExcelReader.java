@@ -27,7 +27,6 @@ public class ExcelReader {
             String email = formatter.formatCellValue(sheet.getRow(1).getCell(0));
             String contrasena = formatter.formatCellValue(sheet.getRow(1).getCell(1));
 
-            // Agregar datos a la lista
             data.add(new String[]{email, contrasena});
         } catch (IOException e) {
             e.printStackTrace();

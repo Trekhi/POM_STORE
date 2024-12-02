@@ -18,7 +18,7 @@ public class BaseTest {
 
         WebDriverManager.chromedriver().setup();
 
-        driver = new EdgeDriver();
+        driver = new ChromeDriver();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         driver.manage().window().maximize();
 
