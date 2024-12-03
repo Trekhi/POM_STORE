@@ -1,5 +1,6 @@
 package com.demoOpencart.utils;
 import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -43,7 +44,11 @@ public class ExcelReader {
             XSSFSheet sheet = workbook.getSheetAt(0);
             DataFormatter formatter = new DataFormatter();
 
-            for (int i = 4; i <= 5; i++) {
+
+            int startRow = findStartRow(sheet, "Product") + 1;
+            int endRow = findStartRow(sheet, "First Name") - 1;
+
+            for (int i = startRow; i < endRow; i++) {
                 String product = formatter.formatCellValue(sheet.getRow(i).getCell(0));
                 String quantity = formatter.formatCellValue(sheet.getRow(i).getCell(1));
 
@@ -64,7 +69,9 @@ public class ExcelReader {
             XSSFSheet sheet = workbook.getSheetAt(0);
             DataFormatter formatter = new DataFormatter();
 
-            for (int i = 8; i <= sheet.getLastRowNum(); i++) {
+            int startRow = findStartRow(sheet, "First Name") + 1;
+
+            for (int i = startRow; i <= sheet.getLastRowNum(); i++) {
                 String firstName = formatter.formatCellValue(sheet.getRow(i).getCell(0));
                 String lastName = formatter.formatCellValue(sheet.getRow(i).getCell(1));
                 String email = formatter.formatCellValue(sheet.getRow(i).getCell(2));
@@ -82,6 +89,21 @@ public class ExcelReader {
         }
 
         return data;
+    }
+
+    // Método para encontrar la fila donde comienza un atributo en particular
+    private int findStartRow(XSSFSheet sheet, String keyword) {
+        DataFormatter formatter = new DataFormatter();
+        for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+            XSSFRow row = sheet.getRow(i);
+            if (row == null) continue;
+
+            String cellValue = formatter.formatCellValue(row.getCell(0));
+            if (keyword.equalsIgnoreCase(cellValue)) {
+                return i;
+            }
+        }
+        throw new IllegalStateException("No se encontró la fila con el valor: " + keyword);
     }
 
 }

@@ -35,7 +35,7 @@ public class CheckoutPage extends BasePage{
 
         if (!guestInput.isSelected()) {
             guestInput.click();
-            System.out.println("\nGuest Checkout seleccionado correctamente.");
+            System.out.println("Guest Checkout seleccionado correctamente.");
         }
     }
 
@@ -97,7 +97,7 @@ public class CheckoutPage extends BasePage{
         WebElement checkbox = driver.findElement(checkInput);
         if (!checkbox.isSelected()) {
             checkbox.click();
-            System.out.println("\nTerms and Conditions seleccionado correctamente.");
+            System.out.println("Terms and Conditions seleccionado correctamente.");
         }
     }
 

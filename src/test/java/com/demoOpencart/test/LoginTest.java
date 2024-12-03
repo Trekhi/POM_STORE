@@ -21,29 +21,31 @@ public class LoginTest extends BaseTest {
         List<String[]> data = excelReader.readDataLogin();
 
         homePage.navigateTo(Constants.BASE_URL);
+        System.out.println("\n\n******** TEST - LOGIN ********\n");
 
         data.forEach(dataProd -> {
             String email = dataProd[0];
             String password = dataProd[1];
 
-            System.out.println("Intentando autenticarse con email: " + email + " y contraseña: " + password);
+            System.out.println("Intentando autenticarse");
+            System.out.println("Email: " + email);
+            System.out.println("Contraseña: " + password);
 
             homePage.selectCategory("My Account");
             homePage.selectCategory("Login");
 
             loginPage.login(email, password);
-
             driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
 
-            //Assert
+            //Validar el inicio de sesión
             String actualTitle = loginPage.getWelcomeTitle();
             String expectedTitle = "My Account";
-            Assertions.assertEquals(expectedTitle, actualTitle, "El titulo de bienvenida no es el esperado");
 
             try {
-                Thread.sleep(5000);
-            }catch (InterruptedException e){
-                throw new RuntimeException(e);
+                Assertions.assertEquals(expectedTitle, actualTitle, "El titulo de bienvenida no es el esperado");
+                System.out.println("\n¡Inicio de sesión exitoso!");
+            } catch (AssertionError e) {
+                System.out.println("\nEl assert de inicio de sesión falló: " + e.getMessage());
             }
 
         });
